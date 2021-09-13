@@ -24,7 +24,7 @@ Route.get('/', async () => {
   return 'This is a CRUD todolist project done by arefin tanweer'
 })
 
-Route.get('/create', 'todosController.create')
+Route.post('/create', 'todosController.create')
 Route.get('/read', 'todosController.read')
-Route.get('/update', 'todosController.update')
-Route.get('/delete', 'todosController.delete')
+Route.put('/update/:id', 'todosController.update')
+Route.delete('/delete/:id', 'todosController.delete')

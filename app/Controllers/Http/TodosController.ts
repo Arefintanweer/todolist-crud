@@ -1,56 +1,41 @@
-// import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Todo from 'App/Models/Todo'
 
 export default class TodosController {
-  async create() {
-    Todo.createMany([
-      {
-        task_name: 'Tution',
-        status: 1,
-      },
-      {
-        task_name: 'Birthday party',
-        status: 0,
-      },
-      {
-        task_name: 'Doctor appointment',
-        status: 1,
-      },
-      {
-        task_name: 'Attend Wedding',
-        status: 0,
-      },
-    ])
-    return 'Successfully Inserted'
+  async create({ request }: HttpContextContract) {
+    const todos = new Todo()
+    todos.task_name = request.input('task_name')
+    todos.status = request.input('status')
+    todos.save()
+    return todos.toJSON()
   }
 
-  async read() {
-    return Todo.all()
-
-    // const filteredTodo = await Todo.find(1)
-    // return filteredTodo
-
-    // const filteredTodo = await Todo.findBy('status', 1)
-    // return filteredTodo
-
-    // const firstTodo = await Todo.first()
-    // return firstTodo
+  async read(){
+    const data = await Todo.all()
+    return JSON.stringify(data)
   }
 
-  async update() {
-    // const updatedTodo = await Todo.findOrFail(1)
-    // updatedTodo.status = 1
-    // await updatedTodo.save()
-    const updatedTodo = await Todo.findOrFail(3)
-    updatedTodo.task_name = 'Play Football'
-    await updatedTodo.save()
-    return 'Successfully Updated'
-  }
-
-  async delete() {
-    const deletedTodo = await Todo.findOrFail(10)
-    await deletedTodo.delete()
-    return 'Successfully Deleted'
-  }
+async update({ params,request }: HttpContextContract){
+  const data = Todo.query().where('id',params.id)
+  data.task_name = request.input('task_name')
+  data.status = request.input('status')
+  data.save()
+  return JSON.stringify(data)
 }
+
+  async delete({ params }: HttpContextContract){
+    const data = Todo.query().where('id',params.id)
+    const deletedData = await data.delete()
+    return JSON.stringify(deletedData)
+  }
+
+  
+
+  // async update({ params, request }: HttpContextContract)) {
+  //   const singleTodo = Todo.query().where('id',params.id)
+  //   singleTodo.task_name = request.input('task_name')
+  //   singleTodo.status = request.input('status')
+  //   singleTodo.save()
+  //   return todos.toJSON()
+  // }
+
